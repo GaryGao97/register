@@ -84,6 +84,23 @@ public class IdCardUtil {
     }
 
     /**
+     * 从身份证号码中获取生日日期，只支持15或18位身份证号码
+     *
+     * @param idCard 身份证号码
+     * @return 日期
+     */
+    public static String getBirthDateStr(String idCard) {
+        final String birthByIdCard = getBirth(idCard);
+        if (birthByIdCard == null) {
+            return null;
+        }
+
+        Date date = strToDate(birthByIdCard, YYYY_MM_DD);
+        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+        return format.format(date);
+    }
+
+    /**
      * 根据身份编号获取年龄，只支持15或18位身份证号码
      *
      * @param idCard 身份证号
@@ -213,7 +230,7 @@ public class IdCardUtil {
      * @param idCard 身份编号
      * @return 性别(男，女)
      */
-    public static String getSex(String idCard) {
+    public static String getSexByCard(String idCard) {
         if (idCard == null || idCard.trim().length() == 0) {
             throw new IllegalArgumentException("ID Card is must not null");
         }
@@ -592,7 +609,7 @@ public class IdCardUtil {
         }
         try {
             if (dateFormat == null || dateFormat.length() == 0) {
-                dateFormat = DATE_FORMAT;
+                dateFormat = TIME_FORMAT;
             }
             DateFormat fmt = new SimpleDateFormat(dateFormat);
             return fmt.parse(str.trim());
@@ -646,9 +663,10 @@ public class IdCardUtil {
     /**
      * 默认日期模板
      */
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String YYYY_MM_DD = "yyyyMMdd";
     private static final String YY_MM_DD = "yyMMdd";
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final char SPACE = ' ';
     /**
      * 数字

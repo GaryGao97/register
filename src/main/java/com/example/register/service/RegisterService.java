@@ -5,6 +5,7 @@ import com.example.register.domain.opt.PageOpt;
 import com.example.register.domain.opt.RegisterOpt;
 import com.example.register.domain.vo.RegisterVO;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
 import java.util.List;
 
@@ -54,4 +55,13 @@ public interface RegisterService {
      * @return
      */
     boolean updateRegister(RegisterOpt opt);
+
+    /**
+     * 导出
+     *
+     * @param opt
+     * @param response
+     * @return
+     */
+    void exportRegister(RegisterOpt opt, HttpServletResponse response);
 }

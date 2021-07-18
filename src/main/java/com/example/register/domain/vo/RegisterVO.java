@@ -16,7 +16,8 @@ public class RegisterVO {
     private String name;
     private String idCard;
     private String sex;
-    private Date birthTime;
+    private Integer age;
+    private String birthTime;
     private String address;
     private String phone;
     private String community;

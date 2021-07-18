@@ -5,21 +5,21 @@ import com.example.register.domain.dao.BasRegisterDO;
 import com.example.register.domain.dao.BasRegisterExample;
 import com.example.register.domain.dao.BaseDO;
 import com.example.register.domain.dao.mapper.BasRegisterMapper;
+import com.example.register.domain.dto.RegisterPrintDTO;
 import com.example.register.domain.opt.PageOpt;
 import com.example.register.domain.opt.RegisterOpt;
 import com.example.register.domain.opt.RegisterSearchParams;
 import com.example.register.domain.vo.RegisterVO;
 import com.example.register.service.RegisterService;
-import com.example.register.util.BeanCopyUtil;
-import com.example.register.util.IdCardUtil;
-import com.example.register.util.JsonUtil;
-import com.example.register.util.UniqueUtils;
+import com.example.register.util.*;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -101,8 +101,8 @@ public class RegisterServiceImpl implements RegisterService {
         return basRegisterDos.stream().map(basRegisterDO -> {
             String idCard = basRegisterDO.getIdCard();
             RegisterVO registerVO = BeanCopyUtil.copyProperties(basRegisterDO, RegisterVO.class);
-            registerVO.setBirthTime(IdCardUtil.getBirthDate(idCard));
-            registerVO.setSex(IdCardUtil.getSex(idCard));
+            registerVO.setBirthTime(IdCardUtil.getBirthDateStr(idCard));
+            registerVO.setSex(IdCardUtil.getSexByCard(idCard));
             return registerVO;
         }).collect(Collectors.toList());
     }
@@ -171,5 +171,37 @@ public class RegisterServiceImpl implements RegisterService {
     public boolean updateRegister(RegisterOpt opt) {
         BasRegisterDO basRegisterDO = BeanCopyUtil.copyProperties(opt, BasRegisterDO.class);
         return basRegisterMapper.updateByPrimaryKeySelective(basRegisterDO) > Constants.NUMBER_ZERO;
+    }
+
+    @Override
+    public void exportRegister(RegisterOpt opt, HttpServletResponse response) {
+        String idCard = opt.getIdCard();
+        BasRegisterDO basRegisterDO = getRegister(idCard);
+        if (basRegisterDO == null) {
+            return;
+        }
+
+        RegisterPrintDTO printDTO = BeanCopyUtil.copyProperties(basRegisterDO, RegisterPrintDTO.class);
+        printDTO.setBirthTime(IdCardUtil.getBirthDateStr(idCard));
+        printDTO.setSex(IdCardUtil.getSexByCard(idCard));
+        printDTO.setAge(IdCardUtil.getAgeByCard(idCard));
+        printDTO.setPrintDate(DateTime.now().toString("报告日期：   yyyy 年 MM 月 dd 日      检验者"));
+        printDTO.setMonthDay(DateTime.now().toString("MM月dd日"));
+
+        String fileName = "血常规化验单-" + DateTime.now().toString("yyyyMMddHHmmss");
+        JxlsUtils.processTemplate(Constants.ROUTINE_BLOOD_TEST_SHEET, fileName,
+                Collections.singletonMap("item", printDTO), response);
+    }
+
+    private BasRegisterDO getRegister(String idCard) {
+        BasRegisterExample example = new BasRegisterExample();
+        example.createCriteria().andDeleteStatusEqualTo(Boolean.FALSE).andIdCardEqualTo(idCard);
+
+        List<BasRegisterDO> basRegisterDos = basRegisterMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(basRegisterDos)) {
+            return null;
+        }
+
+        return basRegisterDos.get(Constants.NUMBER_ZERO);
     }
 }

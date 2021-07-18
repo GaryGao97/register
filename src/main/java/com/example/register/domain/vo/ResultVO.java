@@ -35,6 +35,7 @@ public class ResultVO {
 
     /**
      * 成功
+     *
      * @param data
      * @return
      */
@@ -42,6 +43,22 @@ public class ResultVO {
         ResultVO resultVO = new ResultVO();
         resultVO.setCode(Constants.SUCCESS_CODE);
         resultVO.setMsg(Constants.SUCCESS_MSG);
+        resultVO.setData(data);
+        return resultVO;
+    }
+
+
+    /**
+     * 成功
+     *
+     * @param data
+     * @return
+     */
+    public static ResultVO success(Object data, long count) {
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(Constants.SUCCESS_CODE);
+        resultVO.setMsg(Constants.SUCCESS_MSG);
+        resultVO.setCount(count);
         resultVO.setData(data);
         return resultVO;
     }

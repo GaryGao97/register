@@ -11,4 +11,6 @@ public class Constants {
 
     public static final Integer NUMBER_ZERO = 0;
     public static final Integer NUMBER_MINUS_ONE = -1;
+
+    public final static String ROUTINE_BLOOD_TEST_SHEET = "routineBloodTestSheet.xlsx";
 }

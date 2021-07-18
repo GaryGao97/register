@@ -10,6 +10,7 @@ import com.example.register.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,10 +35,7 @@ public class RegisterController {
      */
     @GetMapping("list")
     public ResultVO listRegister(PageOpt opt) {
-        ResultVO result = new ResultVO();
-        result.setData(registerService.listRegister(opt));
-        result.setCount(registerService.registerCount(opt));
-        return result;
+        return ResultVO.success(registerService.listRegister(opt), registerService.registerCount(opt));
     }
 
     /**
@@ -48,14 +46,18 @@ public class RegisterController {
      */
     @PostMapping("add")
     public ResultVO addRegister(@RequestBody RegisterOpt opt) {
-        boolean success = registerService.addRegister(opt);
-        ResultVO resultVO = new ResultVO();
-        if (!success) {
-            resultVO.setCode(ErrorEnum.E_90004.getErrorCode());
-            resultVO.setMsg(ErrorEnum.E_90004.getErrorMsg());
-        }
+        return registerService.addRegister(opt) ? ResultVO.success() : ResultVO.error(ErrorEnum.E_90004);
+    }
 
-        return resultVO;
+    /**
+     * 导出
+     *
+     * @param opt
+     * @return
+     */
+    @GetMapping("export")
+    public void exportRegister(RegisterOpt opt, HttpServletResponse response) {
+        registerService.exportRegister(opt, response);
     }
 
     /**
@@ -66,14 +68,7 @@ public class RegisterController {
      */
     @PostMapping("update")
     public ResultVO updateRegister(@RequestBody RegisterOpt opt) {
-        boolean success = registerService.updateRegister(opt);
-        ResultVO resultVO = new ResultVO();
-        if (!success) {
-            resultVO.setCode(ErrorEnum.E_90004.getErrorCode());
-            resultVO.setMsg(ErrorEnum.E_90004.getErrorMsg());
-        }
-
-        return resultVO;
+        return registerService.updateRegister(opt) ? ResultVO.success() : ResultVO.error(ErrorEnum.E_90004);
     }
 
     /**
@@ -85,13 +80,6 @@ public class RegisterController {
     @PostMapping("delete")
     public ResultVO deleteRegister(@RequestBody List<RegisterOpt> opt) {
         Set<String> ids = opt.stream().map(RegisterOpt::getRegisterId).collect(Collectors.toSet());
-        boolean success = registerService.deleteRegister(ids);
-        ResultVO resultVO = new ResultVO();
-        if (!success) {
-            resultVO.setCode(ErrorEnum.E_90004.getErrorCode());
-            resultVO.setMsg(ErrorEnum.E_90004.getErrorMsg());
-        }
-
-        return resultVO;
+        return registerService.deleteRegister(ids) ? ResultVO.success() : ResultVO.error(ErrorEnum.E_90004);
     }
 }
