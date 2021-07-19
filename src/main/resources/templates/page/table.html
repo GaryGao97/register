@@ -39,48 +39,61 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">所属社区</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="community" autocomplete="off" class="layui-input">
+                                <select name="community" lay-search="">
+                                    <option value="">全部</option>
+                                    <option value="惠安社区">惠安社区</option>
+                                    <option value="汇工园社区">汇工园社区</option>
+                                    <option value="兴工社区">兴工社区</option>
+                                    <option value="汇兴社区">汇兴社区</option>
+                                    <option value="繁荣社区">繁荣社区</option>
+                                    <option value="北宁社区">北宁社区</option>
+                                    <option value="振兴社区">振兴社区</option>
+                                    <option value="阳光园社区">阳光园社区</option>
+                                </select>
                             </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">体检时间</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="startExaminationTime" id="startExaminationTime" lay-verify="date" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-
-                        <div class="layui-inline">
-                            <div class="layui-input-inline">
-                                <input type="text" name="endExaminationTime" id="endExaminationTime" lay-verify="date"
-                                       autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-
-                        <div class="layui-inline">
-                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
-                                    lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
-                            </button>
                         </div>
                     </div>
-                </form>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">体检时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="startExaminationTime" id="startExaminationTime"
+                                   lay-verify="date" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" name="endExaminationTime" id="endExaminationTime" lay-verify="date"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                        </button>
+                    </div>
             </div>
-        </fieldset>
-
-        <script type="text/html" id="toolbarDemo">
-            <div class="layui-btn-container">
-                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加</button>
-                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除</button>
-            </div>
-        </script>
-
-        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
-
-        <script type="text/html" id="currentTableBar">
-            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
-            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
-        </script>
-
+            </form>
     </div>
+    </fieldset>
+
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加</button>
+            <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除</button>
+        </div>
+    </script>
+
+    <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+    <script type="text/html" id="currentTableBar">
+        <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+    </script>
+
+</div>
 </div>
 <script src="../static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
 <script src="../static/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
@@ -92,9 +105,10 @@
             laydate = layui.laydate,
             api = layui.globalConfig.api;
 
+        let current = new Date()
         laydate.render({
             elem: '#startExaminationTime',
-            value: new Date(),
+            value: new Date(current.setFullYear(current.getFullYear() - 1)),
         });
 
         laydate.render({
@@ -174,6 +188,10 @@
             } else if (obj.event === 'delete') {  // 监听删除操作
                 var checkStatus = table.checkStatus('currentTableId')
                     , data = checkStatus.data;
+                if (data.length === 0) {
+                    return
+                }
+
                 $.ajax({
                     type: "POST",
                     url: `${api}/register/delete`,
@@ -224,7 +242,7 @@
                         body.find("input[name=idCard]").val(data.idCard);
                         body.find("input[name=phone]").val(data.phone);
                         body.find("input[name=address]").val(data.address);
-                        body.find("input[name=community]").val(data.community);
+                        body.find("select[name=community]").val(data.community);
                         body.find("input[name=examinationTime]").val(data.examinationTime);
                         body.find("input[name=remark]").val(data.remark);
                     },

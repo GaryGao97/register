@@ -57,15 +57,15 @@ public class RegisterServiceImpl implements RegisterService {
             }
 
             if (StringUtils.isNotBlank(searchParams.getPhone())) {
-                criteria.andNameLike("%" + searchParams.getPhone() + "%");
+                criteria.andPhoneLike("%" + searchParams.getPhone() + "%");
             }
 
             if (StringUtils.isNotBlank(searchParams.getCommunity())) {
-                criteria.andNameLike("%" + searchParams.getCommunity() + "%");
+                criteria.andCommunityEqualTo(searchParams.getCommunity());
             }
 
             if (StringUtils.isNotBlank(searchParams.getIdCard())) {
-                criteria.andNameLike("%" + searchParams.getIdCard() + "%");
+                criteria.andIdCardLike("%" + searchParams.getIdCard() + "%");
             }
 
             SimpleDateFormat sdf = new SimpleDateFormat(" yyyy-MM-dd");
@@ -103,6 +103,9 @@ public class RegisterServiceImpl implements RegisterService {
             RegisterVO registerVO = BeanCopyUtil.copyProperties(basRegisterDO, RegisterVO.class);
             registerVO.setBirthTime(IdCardUtil.getBirthDateStr(idCard));
             registerVO.setSex(IdCardUtil.getSexByCard(idCard));
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            registerVO.setExaminationTime(format.format(basRegisterDO.getExaminationTime()));
             return registerVO;
         }).collect(Collectors.toList());
     }
@@ -119,15 +122,15 @@ public class RegisterServiceImpl implements RegisterService {
             }
 
             if (StringUtils.isNotBlank(searchParams.getPhone())) {
-                criteria.andNameLike("%" + searchParams.getPhone() + "%");
+                criteria.andPhoneLike("%" + searchParams.getPhone() + "%");
             }
 
             if (StringUtils.isNotBlank(searchParams.getCommunity())) {
-                criteria.andNameLike("%" + searchParams.getCommunity() + "%");
+                criteria.andCommunityEqualTo(searchParams.getCommunity());
             }
 
             if (StringUtils.isNotBlank(searchParams.getIdCard())) {
-                criteria.andNameLike("%" + searchParams.getIdCard() + "%");
+                criteria.andIdCardLike("%" + searchParams.getIdCard() + "%");
             }
 
             SimpleDateFormat sdf = new SimpleDateFormat(" yyyy-MM-dd");
@@ -193,7 +196,22 @@ public class RegisterServiceImpl implements RegisterService {
                 Collections.singletonMap("item", printDTO), response);
     }
 
-    private BasRegisterDO getRegister(String idCard) {
+    @Override
+    public void exportRegisterAll(RegisterOpt opt, HttpServletResponse response) {
+        PageOpt pageOpt = new PageOpt();
+        pageOpt.setSearchParams(JsonUtil.toJsonString(opt));
+        List<RegisterVO> registerVos = listRegister(pageOpt);
+        if (CollectionUtils.isEmpty(registerVos)) {
+            return;
+        }
+
+        String fileName = "体检登记-" + DateTime.now().toString("yyyyMMddHHmmss");
+        JxlsUtils.processTemplate(Constants.MEDICAL_REGISTRATION, fileName,
+                Collections.singletonMap("item", registerVos), response);
+    }
+
+    @Override
+    public BasRegisterDO getRegister(String idCard) {
         BasRegisterExample example = new BasRegisterExample();
         example.createCriteria().andDeleteStatusEqualTo(Boolean.FALSE).andIdCardEqualTo(idCard);
 
@@ -201,6 +219,7 @@ public class RegisterServiceImpl implements RegisterService {
         if (CollectionUtils.isEmpty(basRegisterDos)) {
             return null;
         }
+
 
         return basRegisterDos.get(Constants.NUMBER_ZERO);
     }

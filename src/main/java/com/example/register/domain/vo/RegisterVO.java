@@ -21,6 +21,6 @@ public class RegisterVO {
     private String address;
     private String phone;
     private String community;
-    private Date examinationTime;
+    private String examinationTime;
     private String remark;
 }

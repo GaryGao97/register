@@ -26,7 +26,11 @@ public enum ErrorEnum implements BaseErrorInfoInterface {
     E_90004("90004", "操作失败"),
 
     BODY_NOT_MATCH("400","请求的数据格式不符!"),
-    INTERNAL_SERVER_ERROR("500", "服务器内部错误!");
+    INTERNAL_SERVER_ERROR("500", "服务器内部错误!"),
+
+    DATA_ALREADY_EXISTS("600", "数据已存在!"),
+    REGISTERED("701", "往年已登记!");
+
 
     private final String errorCode;
 

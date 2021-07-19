@@ -1,6 +1,7 @@
 package com.example.register.service;
 
 
+import com.example.register.domain.dao.BasRegisterDO;
 import com.example.register.domain.opt.PageOpt;
 import com.example.register.domain.opt.RegisterOpt;
 import com.example.register.domain.vo.RegisterVO;
@@ -64,4 +65,21 @@ public interface RegisterService {
      * @return
      */
     void exportRegister(RegisterOpt opt, HttpServletResponse response);
+
+    /**
+     * 导出
+     *
+     * @param opt
+     * @param response
+     * @return
+     */
+    void exportRegisterAll(RegisterOpt opt, HttpServletResponse response);
+
+    /**
+     * 获取登记
+     *
+     * @param idCard
+     * @return
+     */
+    BasRegisterDO getRegister(String idCard);
 }

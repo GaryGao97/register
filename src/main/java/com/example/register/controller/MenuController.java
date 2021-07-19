@@ -40,8 +40,7 @@ public class MenuController {
                 "                {\n" +
                 "                    \"title\": \"体检登记\",\n" +
                 "                    \"href\": \"table\",\n" +
-                "                    \"icon\": \"fa fa-file-text\",\n" +
-                "                    \"target\": \"_self\"\n" +
+                "                    \"icon\": \"fa fa-file-text\"" +
                 "                }\n" +
                 "            ]\n" +
                 "        }\n" +

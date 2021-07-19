@@ -32,7 +32,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label required">身份证</label>
         <div class="layui-input-block">
-            <input type="text" name="idCard" lay-verify="required" lay-reqtext="身份证不能为空" placeholder="请输入身份证" value=""
+            <input type="text" name="idCard" lay-verify="identity" lay-reqtext="身份证不能为空" placeholder="请输入身份证" value=""
                    class="layui-input">
         </div>
     </div>
@@ -46,7 +46,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label required">手机</label>
         <div class="layui-input-block">
-            <input type="number" name="phone" lay-verify="required" lay-reqtext="手机不能为空" placeholder="请输入手机" value=""
+            <input type="number" name="phone" lay-verify="phone" lay-reqtext="手机不能为空" placeholder="请输入手机" value=""
                    class="layui-input">
         </div>
     </div>
@@ -58,10 +58,19 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label required">所属社区</label>
-        <div class="layui-input-block">
-            <input type="text" name="community" lay-verify="required" lay-reqtext="所属社区不能为空" placeholder="请输入所属社区"
-                   value="" class="layui-input">
+        <label class="layui-form-label">所属社区</label>
+        <div class="layui-input-inline">
+            <select name="community" lay-search="" lay-verify="required" id="community">
+                <option value="">请选择所属社区</option>
+                <option value="惠安社区">惠安社区</option>
+                <option value="汇工园社区">汇工园社区</option>
+                <option value="兴工社区">兴工社区</option>
+                <option value="汇兴社区">汇兴社区</option>
+                <option value="繁荣社区">繁荣社区</option>
+                <option value="北宁社区">北宁社区</option>
+                <option value="振兴社区">振兴社区</option>
+                <option value="阳光园社区">阳光园社区</option>
+            </select>
         </div>
     </div>
     <div class="layui-form-item">
@@ -88,12 +97,14 @@
 <script src="../../static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
 <script src="../../static/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
 <script>
-    layui.use(['form', 'laydate', 'globalConfig'], function () {
+    layui.use(['form', 'laydate', 'globalConfig'], function (data) {
         var form = layui.form,
             layer = layui.layer,
             $ = layui.$,
             laydate = layui.laydate,
             api = layui.globalConfig.api;
+
+        form.render('select');
 
         //日期
         laydate.render({

@@ -20,14 +20,14 @@
         <label class="layui-form-label required">姓名</label>
         <div class="layui-input-block">
             <input type="text" name="name" lay-verify="required" lay-reqtext="姓名不能为空" placeholder="请输入姓名" value=""
-                   class="layui-input">
+                   class="layui-input" id="name">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label required">身份证</label>
         <div class="layui-input-block">
-            <input type="text" name="idCard" lay-verify="required" lay-reqtext="身份证不能为空" placeholder="请输入身份证" value=""
-                   class="layui-input">
+            <input type="text" name="idCard" lay-verify="identity" lay-reqtext="身份证不能为空" placeholder="请输入身份证" value=""
+                   class="layui-input" id="idCard">
         </div>
     </div>
     <!--    <div class="layui-form-item">-->
@@ -40,35 +40,45 @@
     <div class="layui-form-item">
         <label class="layui-form-label required">手机</label>
         <div class="layui-input-block">
-            <input type="number" name="phone" lay-verify="required" lay-reqtext="手机不能为空" placeholder="请输入手机" value=""
-                   class="layui-input">
+            <input type="number" name="phone" lay-verify="phone" lay-reqtext="手机不能为空" placeholder="请输入手机" value=""
+                   class="layui-input" id="phone">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label required">现住址</label>
         <div class="layui-input-block">
             <input type="text" name="address" lay-verify="required" lay-reqtext="现住址不能为空" placeholder="请输入现住址" value=""
-                   class="layui-input">
+                   class="layui-input" id="address">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label required">所属社区</label>
-        <div class="layui-input-block">
-            <input type="text" name="community" lay-verify="required" lay-reqtext="所属社区不能为空" placeholder="请输入所属社区"
-                   value="" class="layui-input">
+        <label class="layui-form-label">所属社区</label>
+        <div class="layui-input-inline">
+            <select name="community" lay-search="" lay-verify="required" id="community">
+                <option value="">请选择所属社区</option>
+                <option value="惠安社区">惠安社区</option>
+                <option value="汇工园社区">汇工园社区</option>
+                <option value="兴工社区">兴工社区</option>
+                <option value="汇兴社区">汇兴社区</option>
+                <option value="繁荣社区">繁荣社区</option>
+                <option value="北宁社区">北宁社区</option>
+                <option value="振兴社区">振兴社区</option>
+                <option value="阳光园社区">阳光园社区</option>
+            </select>
         </div>
     </div>
+
     <div class="layui-form-item">
         <label class="layui-form-label">体检日期</label>
         <div class="layui-input-block">
             <input type="text" name="examinationTime" lay-verify="required" lay-reqtext="体检日期不能为空" placeholder="请输入体检日期"
-                   id="date" autocomplete="off" class="layui-input">
+                   autocomplete="off" class="layui-input" id="examinationTime">
         </div>
     </div>
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">备注</label>
         <div class="layui-input-block">
-            <textarea name="remark" class="layui-textarea" placeholder="请输入备注信息"></textarea>
+            <textarea name="remark" class="layui-textarea" placeholder="请输入备注信息" id="remark"></textarea>
         </div>
     </div>
 
@@ -91,28 +101,45 @@
 
         //日期
         laydate.render({
-            elem: '#date'
+            elem: '#examinationTime',
+            value: new Date()
         });
 
         //监听提交
         form.on('submit(saveBtn)', function (data) {
             $.ajax({
                 type: "POST",
-                url: `${api}/register/add`,
+                url: `${api}/register/add-plus`,
                 data: JSON.stringify(data.field),
                 dataType: "json",
                 contentType: "application/json",
                 success: function (res) {
-                    if (res.code === '0') {
-                        layer.msg('添加成功', {
+                    if (res.code === '0' || res.code === '600') {
+                        layer.msg(res.msg, {
                             offset: '15px',
                             icon: 1,
                             time: 1000
                         }, function () {
-                            window.location=`${api}/register/export?idCard=` + data.field.idCard;
+                            window.location = `${api}/register/export?idCard=` + data.field.idCard;
                             var iframeIndex = parent.layer.getFrameIndex(window.name);
                             parent.layer.close(iframeIndex);
                         });
+                    } else if (res.code === '701') {
+                        layer.msg(res.msg, {
+                            offset: '15px',
+                            icon: 1,
+                            time: 1000
+                        });
+
+                        let register = res.data;
+                        $("#name").val(register.name);
+                        $("#idCard").val(register.idCard);
+                        $("#phone").val(register.phone);
+                        $("#address").val(register.address);
+                        $("#community").val(register.community);
+                        $("#examinationTime").val(register.examinationTime);
+                        $("#remark").val(register.remark);
+                        form.render('select');
                     } else {
                         layer.msg('添加失败', {
                             offset: '15px',

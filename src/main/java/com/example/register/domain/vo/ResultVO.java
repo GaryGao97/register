@@ -47,6 +47,16 @@ public class ResultVO {
         return resultVO;
     }
 
+    /**
+     * 成功
+     */
+    public static ResultVO success(String code, String message, Object data) {
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(code);
+        resultVO.setMsg(message);
+        resultVO.setData(data);
+        return resultVO;
+    }
 
     /**
      * 成功
