@@ -19,7 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -177,7 +182,7 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
-    public void exportRegister(RegisterOpt opt, HttpServletResponse response) {
+    public void exportRegister(RegisterOpt opt, HttpServletResponse res) {
         String idCard = opt.getIdCard();
         BasRegisterDO basRegisterDO = getRegister(idCard);
         if (basRegisterDO == null) {
@@ -192,12 +197,17 @@ public class RegisterServiceImpl implements RegisterService {
         printDTO.setMonthDay(DateTime.now().toString("MM月dd日"));
 
         String fileName = "血常规化验单-" + DateTime.now().toString("yyyyMMddHHmmss");
-        JxlsUtils.processTemplate(Constants.ROUTINE_BLOOD_TEST_SHEET, fileName,
-                Collections.singletonMap("item", printDTO), response);
+        Map<String, Object> model = Collections.singletonMap("item", printDTO);
+
+        try {
+            JxlsTemplate.processTemplate(res, "routineBloodTestSheet.xlsx", fileName, model);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void exportRegisterAll(RegisterOpt opt, HttpServletResponse response) {
+    public void exportRegisterAll(RegisterOpt opt, HttpServletResponse res) {
         PageOpt pageOpt = new PageOpt();
         pageOpt.setSearchParams(JsonUtil.toJsonString(opt));
         List<RegisterVO> registerVos = listRegister(pageOpt);
@@ -206,8 +216,13 @@ public class RegisterServiceImpl implements RegisterService {
         }
 
         String fileName = "体检登记-" + DateTime.now().toString("yyyyMMddHHmmss");
-        JxlsUtils.processTemplate(Constants.MEDICAL_REGISTRATION, fileName,
-                Collections.singletonMap("item", registerVos), response);
+        Map<String, Object> model = Collections.singletonMap("entries", registerVos);
+
+        try {
+            JxlsTemplate.processTemplate(res, "medicalRegistration.xlsx", fileName, model);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

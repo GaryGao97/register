@@ -1,12 +1,17 @@
 package com.example.register.domain.opt;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.NonNull;
 
 /**
  * @author: Gary Gao(修远)
  * @date: 2021/7/18
  */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RegisterSearchParams {
     private String name;
     private String idCard;

@@ -1,5 +1,6 @@
 package com.example.register.domain.opt;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 /**
