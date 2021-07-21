@@ -114,7 +114,7 @@
                 dataType: "json",
                 contentType: "application/json",
                 success: function (res) {
-                    if (res.code === '0' || res.code === '600') {
+                    if (res.code === '0') {
                         window.location = `${api}/register/export?idCard=` + data.field.idCard;
                         layer.msg(res.msg, {
                             offset: '15px',
@@ -123,6 +123,12 @@
                         }, function () {
                             var iframeIndex = parent.layer.getFrameIndex(window.name);
                             parent.layer.close(iframeIndex);
+                        });
+                    } else if (res.code === '600') {
+                        layer.msg(res.msg, {
+                            offset: '15px',
+                            icon: 1,
+                            time: 1000
                         });
                     } else if (res.code === '701') {
                         layer.msg(res.msg, {

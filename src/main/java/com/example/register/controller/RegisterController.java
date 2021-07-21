@@ -65,16 +65,15 @@ public class RegisterController {
         if (basRegisterDO != null) {
             Date examinationTime = basRegisterDO.getExaminationTime();
             if (examinationTime.getYear() == new Date().getYear()) {
-                RegisterVO registerVO = BeanCopyUtil.copyProperties(basRegisterDO, RegisterVO.class);
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                registerVO.setExaminationTime(format.format(basRegisterDO.getExaminationTime()));
-                return ResultVO.success(ErrorEnum.REGISTERED.getErrorCode(),
-                        ErrorEnum.REGISTERED.getErrorMsg(), registerVO);
+                return ResultVO.success(ErrorEnum.DATA_ALREADY_EXISTS.getErrorCode(),
+                        ErrorEnum.DATA_ALREADY_EXISTS.getErrorMsg(), null);
             }
 
-            return ResultVO.success(ErrorEnum.DATA_ALREADY_EXISTS.getErrorCode(),
-                    ErrorEnum.DATA_ALREADY_EXISTS.getErrorMsg(), null);
-
+            RegisterVO registerVO = BeanCopyUtil.copyProperties(basRegisterDO, RegisterVO.class);
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            registerVO.setExaminationTime(format.format(basRegisterDO.getExaminationTime()));
+            return ResultVO.success(ErrorEnum.REGISTERED.getErrorCode(),
+                    ErrorEnum.REGISTERED.getErrorMsg(), registerVO);
         }
 
         return registerService.addRegister(opt) ? ResultVO.success() : ResultVO.error(ErrorEnum.E_90004);

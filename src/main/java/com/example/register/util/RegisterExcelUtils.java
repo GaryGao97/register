@@ -17,6 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,12 +43,12 @@ public class RegisterExcelUtils {
     }
 
     private static boolean checkTableHead(XSSFSheet sheetAt) {
-        if (sheetAt == null || sheetAt.getLastRowNum() < 2) {
+        if (sheetAt == null || sheetAt.getLastRowNum() < 1) {
             return false;
         }
 
         // 表头校验
-        XSSFRow head = sheetAt.getRow(1);
+        XSSFRow head = sheetAt.getRow(0);
         for (int column = 0; column < HEAD.length; column++) {
             if (!head.getCell(column).getStringCellValue().equals(HEAD[column])) {
                 return false;
@@ -73,7 +74,7 @@ public class RegisterExcelUtils {
             }
 
             // 循环行
-            for (int rowNum = 2; rowNum <= sheetAt.getLastRowNum(); rowNum++) {
+            for (int rowNum = 1; rowNum <= sheetAt.getLastRowNum(); rowNum++) {
                 try {
                     XSSFRow row = sheetAt.getRow(rowNum);
                     T item = cl.newInstance();
@@ -101,7 +102,7 @@ public class RegisterExcelUtils {
                         cell.setCellType(CellType.STRING);
                         String address = cell.getStringCellValue();
                         if (StringUtils.isNotBlank(address)) {
-                            item.setIdCard(address);
+                            item.setAddress(address);
                         }
                     }
 
@@ -110,7 +111,7 @@ public class RegisterExcelUtils {
                         cell.setCellType(CellType.STRING);
                         String phone = cell.getStringCellValue();
                         if (StringUtils.isNotBlank(phone)) {
-                            item.setIdCard(phone);
+                            item.setPhone(phone);
                         }
                     }
 
@@ -119,7 +120,7 @@ public class RegisterExcelUtils {
                         cell.setCellType(CellType.STRING);
                         String community = cell.getStringCellValue();
                         if (StringUtils.isNotBlank(community)) {
-                            item.setIdCard(community);
+                            item.setCommunity(community);
                         }
                     }
 
@@ -128,7 +129,7 @@ public class RegisterExcelUtils {
                         cell.setCellType(CellType.STRING);
                         String examinationTime = cell.getStringCellValue();
                         if (StringUtils.isNotBlank(examinationTime)) {
-                            DateFormat fmt =new SimpleDateFormat("yyyy-MM-dd");
+                            DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
                             item.setExaminationTime(fmt.parse(examinationTime));
                         }
                     }
@@ -138,9 +139,23 @@ public class RegisterExcelUtils {
                         cell.setCellType(CellType.STRING);
                         String remark = cell.getStringCellValue();
                         if (StringUtils.isNotBlank(remark)) {
-                            item.setIdCard(remark);
+                            item.setRemark(remark);
                         }
                     }
+
+                    final String name = item.getName();
+                    final String idCard = item.getIdCard();
+                    final String address = item.getAddress();
+                    final String phone = item.getPhone();
+                    final String community = item.getCommunity();
+                    final Date examinationTime = item.getExaminationTime();
+                    final String remark = item.getRemark();
+
+                    if (StringUtils.isAnyBlank(name, idCard, address, phone, community)
+                            || examinationTime == null) {
+                        continue;
+                    }
+
 
                     items.add(item);
                 } catch (Exception e) {

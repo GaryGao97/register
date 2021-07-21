@@ -76,19 +76,23 @@
                                     lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
                             </button>
                         </div>
+
+                        <div class="layui-inline">
+                            <button type="button" class="layui-btn" id="test3">
+                                <i class="layui-icon"></i>导入
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
         </fieldset>
+
 
         <script type="text/html" id="toolbarDemo">
             <div class="layui-btn-container">
                 <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加</button>
                 <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除</button>
                 <button class="layui-btn layui-btn-sm data-export-btn layui-btn-warm" lay-event="export"> 导出</button>
-                <button type="button" class="layui-btn layui-btn-sm demoMore" id="import">
-                    <i class="layui-icon">&#xe67c;</i>导入
-                </button>
             </div>
         </script>
 
@@ -101,6 +105,8 @@
 
     </div>
 </div>
+
+
 <script src="../static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
 <script src="../static/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
 <script>
@@ -124,19 +130,37 @@
         });
 
         //执行实例
-        var uploadInst = upload.render({
-            elem: '.demoMore'
-            , url: `${api}/register/list`
+        upload.render({
+            elem: '#test3'
+            , url: `${api}/register/import`
             , accept: 'file'
             , exts: 'xls|xlsx'
-            , done: function (res) {
-                //上传完毕回调
+            , before: function (obj) { //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+                layer.load(); //上传loading
             }
-            , error: function () {
-                //请求异常回调
+            , done: function (res, index, upload) {
+                layer.closeAll('loading'); //关闭loading
+                layer.msg(res.msg, {
+                    offset: '15px',
+                    icon: 1,
+                    time: 1000
+                }, function () {
+                    table.reload('currentTableId', {
+                        page: {
+                            curr: 1
+                        }
+                    }, 'data')
+                });
+            }
+            , error: function (index, upload) {
+                layer.closeAll('loading'); //关闭loading
+                layer.msg("导入失败!", {
+                    offset: '15px',
+                    icon: 1,
+                    time: 1000
+                });
             }
         });
-
         table.render({
             elem: '#currentTableId',
             url: `${api}/register/list`,

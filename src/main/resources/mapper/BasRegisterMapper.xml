@@ -124,10 +124,10 @@
     update_time, delete_status)
     values
     <foreach collection ="list" item="item" index= "index" separator =",">
-      (#{registerId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR},
-      #{address,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{community,jdbcType=VARCHAR},
-      #{examinationTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
-      #{updateTime,jdbcType=TIMESTAMP}, #{deleteStatus,jdbcType=BIT})
+      (#{item.registerId,jdbcType=VARCHAR}, #{item.name,jdbcType=VARCHAR}, #{item.idCard,jdbcType=VARCHAR},
+      #{item.address,jdbcType=VARCHAR}, #{item.phone,jdbcType=VARCHAR}, #{item.community,jdbcType=VARCHAR},
+      #{item.examinationTime,jdbcType=TIMESTAMP}, #{item.remark,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.updateTime,jdbcType=TIMESTAMP}, #{item.deleteStatus,jdbcType=BIT})
     </foreach>
   </insert>
 

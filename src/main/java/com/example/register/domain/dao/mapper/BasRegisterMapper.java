@@ -15,7 +15,7 @@ public interface BasRegisterMapper {
 
     int insert(BasRegisterDO record);
 
-    int insertBatch(List<BasRegisterDO> records);
+    int insertBatch(List<BasRegisterDO> list);
 
     int insertSelective(BasRegisterDO record);
 

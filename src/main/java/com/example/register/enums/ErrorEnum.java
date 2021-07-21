@@ -28,7 +28,7 @@ public enum ErrorEnum implements BaseErrorInfoInterface {
     BODY_NOT_MATCH("400","请求的数据格式不符!"),
     INTERNAL_SERVER_ERROR("500", "服务器内部错误!"),
 
-    DATA_ALREADY_EXISTS("600", "数据已存在!"),
+    DATA_ALREADY_EXISTS("600", "已体检!"),
     REGISTERED("701", "往年已登记!"),
     FILE_NOT_EXISTS("702", "文件不存在");
 
