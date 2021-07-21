@@ -18,13 +18,10 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -102,6 +99,7 @@ public class RegisterServiceImpl implements RegisterService {
             PageHelper.startPage(page, limit);
         }
 
+        example.setOrderByClause("examination_time desc");
         List<BasRegisterDO> basRegisterDos = basRegisterMapper.selectByExample(example);
         return basRegisterDos.stream().map(basRegisterDO -> {
             String idCard = basRegisterDO.getIdCard();
@@ -176,6 +174,7 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean updateRegister(RegisterOpt opt) {
         BasRegisterDO basRegisterDO = BeanCopyUtil.copyProperties(opt, BasRegisterDO.class);
         return basRegisterMapper.updateByPrimaryKeySelective(basRegisterDO) > Constants.NUMBER_ZERO;
@@ -230,6 +229,7 @@ public class RegisterServiceImpl implements RegisterService {
         BasRegisterExample example = new BasRegisterExample();
         example.createCriteria().andDeleteStatusEqualTo(Boolean.FALSE).andIdCardEqualTo(idCard);
 
+        example.setOrderByClause("examination_time desc");
         List<BasRegisterDO> basRegisterDos = basRegisterMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(basRegisterDos)) {
             return null;
@@ -237,5 +237,26 @@ public class RegisterServiceImpl implements RegisterService {
 
 
         return basRegisterDos.get(Constants.NUMBER_ZERO);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public boolean importRegister(MultipartFile file) {
+        try (InputStream inputStream = file.getInputStream()) {
+            List<BasRegisterDO> basRegisterDos = RegisterExcelUtils.readExcel(BasRegisterDO.class, inputStream);
+            if (CollectionUtils.isEmpty(basRegisterDos)) {
+                return true;
+            }
+
+            basRegisterDos.forEach(basRegisterDO -> {
+                basRegisterDO.setRegisterId(UniqueUtils.getBusinessKey());
+                BaseDO.initBaseDO(basRegisterDO);
+            });
+
+            return basRegisterMapper.insertBatch(basRegisterDos) > Constants.NUMBER_ZERO;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -2,8 +2,9 @@ package com.example.register.domain.dao.mapper;
 
 import com.example.register.domain.dao.BasRegisterDO;
 import com.example.register.domain.dao.BasRegisterExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface BasRegisterMapper {
     long countByExample(BasRegisterExample example);
@@ -13,6 +14,8 @@ public interface BasRegisterMapper {
     int deleteByPrimaryKey(String registerId);
 
     int insert(BasRegisterDO record);
+
+    int insertBatch(List<BasRegisterDO> records);
 
     int insertSelective(BasRegisterDO record);
 

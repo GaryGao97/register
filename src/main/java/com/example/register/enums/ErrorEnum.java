@@ -29,7 +29,9 @@ public enum ErrorEnum implements BaseErrorInfoInterface {
     INTERNAL_SERVER_ERROR("500", "服务器内部错误!"),
 
     DATA_ALREADY_EXISTS("600", "数据已存在!"),
-    REGISTERED("701", "往年已登记!");
+    REGISTERED("701", "往年已登记!"),
+    FILE_NOT_EXISTS("702", "文件不存在");
+
 
 
     private final String errorCode;

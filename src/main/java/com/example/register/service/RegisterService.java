@@ -5,6 +5,7 @@ import com.example.register.domain.dao.BasRegisterDO;
 import com.example.register.domain.opt.PageOpt;
 import com.example.register.domain.opt.RegisterOpt;
 import com.example.register.domain.vo.RegisterVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
@@ -82,4 +83,11 @@ public interface RegisterService {
      * @return
      */
     BasRegisterDO getRegister(String idCard);
+
+    /**
+     * 文件导入
+     * @param file
+     * @return
+     */
+    boolean importRegister(MultipartFile file);
 }

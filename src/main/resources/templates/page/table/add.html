@@ -115,12 +115,12 @@
                 contentType: "application/json",
                 success: function (res) {
                     if (res.code === '0' || res.code === '600') {
+                        window.location = `${api}/register/export?idCard=` + data.field.idCard;
                         layer.msg(res.msg, {
                             offset: '15px',
                             icon: 1,
                             time: 1000
                         }, function () {
-                            window.location = `${api}/register/export?idCard=` + data.field.idCard;
                             var iframeIndex = parent.layer.getFrameIndex(window.name);
                             parent.layer.close(iframeIndex);
                         });

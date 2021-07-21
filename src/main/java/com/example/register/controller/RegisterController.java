@@ -1,15 +1,14 @@
 package com.example.register.controller;
 
-import com.azul.crs.client.Result;
 import com.example.register.domain.dao.BasRegisterDO;
 import com.example.register.domain.opt.PageOpt;
+import com.example.register.domain.opt.RegisterImportOpt;
 import com.example.register.domain.opt.RegisterOpt;
 import com.example.register.domain.vo.RegisterVO;
 import com.example.register.domain.vo.ResultVO;
 import com.example.register.enums.ErrorEnum;
 import com.example.register.service.RegisterService;
 import com.example.register.util.BeanCopyUtil;
-import com.example.register.util.IdCardUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -124,5 +123,21 @@ public class RegisterController {
     public ResultVO deleteRegister(@RequestBody List<RegisterOpt> opt) {
         Set<String> ids = opt.stream().map(RegisterOpt::getRegisterId).collect(Collectors.toSet());
         return registerService.deleteRegister(ids) ? ResultVO.success() : ResultVO.error(ErrorEnum.E_90004);
+    }
+
+    /**
+     * 导入
+     *
+     * @param opt
+     * @return
+     */
+    @PostMapping("import")
+    public ResultVO importRegister(RegisterImportOpt opt) {
+        if (opt.getFile() == null) {
+            return ResultVO.error("文件不存在");
+        }
+
+        return registerService.importRegister(opt.getFile()) ? ResultVO.success() :
+                ResultVO.error(ErrorEnum.FILE_NOT_EXISTS);
     }
 }
