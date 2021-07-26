@@ -290,7 +290,7 @@
                         body.find("input[name=address]").val(data.address);
                         body.find("select[name=community]").val(data.community);
                         body.find("input[name=examinationTime]").val(data.examinationTime);
-                        body.find("input[name=remark]").val(data.remark);
+                        body.find("textarea[name=remark]").val(data.remark);
                     },
                     end: function () {
                         table.reload('currentTableId', {

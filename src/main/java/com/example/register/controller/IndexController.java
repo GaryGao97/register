@@ -4,7 +4,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 
 /**
  * 静态路由
@@ -23,7 +22,6 @@ public class IndexController {
     @RequestMapping("/**")
     public String index(HttpServletRequest req){
         String requestUri = req.getRequestURI();
-        String contextPath = req.getContextPath();
-        return requestUri.replace(contextPath + File.separator, "");
+        return requestUri.replace("/api/", "");
     }
 }
