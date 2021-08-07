@@ -118,7 +118,7 @@
   </insert>
 
   <insert id="insertBatch">
-    insert into bas_register (register_id, `name`, id_card,
+    insert ignore into bas_register (register_id, `name`, id_card,
     address, phone, community,
     examination_time, remark, create_time,
     update_time, delete_status)

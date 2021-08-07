@@ -13,6 +13,7 @@ import com.example.register.domain.vo.RegisterVO;
 import com.example.register.service.RegisterService;
 import com.example.register.util.*;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -243,7 +244,8 @@ public class RegisterServiceImpl implements RegisterService {
     @Override
     public boolean importRegister(MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()) {
-            List<BasRegisterDO> basRegisterDos = RegisterExcelUtils.readExcel(BasRegisterDO.class, inputStream);
+            List<BasRegisterDO> basRegisterDos = RegisterExcelUtils.readExcel(BasRegisterDO.class, inputStream,
+                    FileUtils.getFileSuffix(file.getOriginalFilename()));
             if (CollectionUtils.isEmpty(basRegisterDos)) {
                 return true;
             }
@@ -253,7 +255,8 @@ public class RegisterServiceImpl implements RegisterService {
                 BaseDO.initBaseDO(basRegisterDO);
             });
 
-            return basRegisterMapper.insertBatch(basRegisterDos) > Constants.NUMBER_ZERO;
+            ListUtils.partition(basRegisterDos, 5000).forEach(item -> basRegisterMapper.insertBatch(item));
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
