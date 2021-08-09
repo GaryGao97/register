@@ -255,7 +255,7 @@ public class RegisterServiceImpl implements RegisterService {
                 BaseDO.initBaseDO(basRegisterDO);
             });
 
-            ListUtils.partition(basRegisterDos, 5000).forEach(item -> basRegisterMapper.insertBatch(item));
+            ListUtils.partition(basRegisterDos, 10000).forEach(item -> basRegisterMapper.insertBatch(item));
             return true;
         } catch (Exception e) {
             e.printStackTrace();
