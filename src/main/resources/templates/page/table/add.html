@@ -159,6 +159,43 @@
             return false;
         });
 
+        $(function () {
+            //输入框的值改变时触发
+            $("#idCard").on("input", function (e) {
+                //获取input输入的值
+                let idCard = e.delegateTarget.value;
+                if (idCard.length === 10 || idCard.length === 15 || idCard.length === 18) {
+                    $.ajax({
+                        url: `${api}/register?idCard=` + idCard,
+                        success: function (res) {
+                            if (res.code === '600') {
+                                layer.msg(res.msg, {
+                                    offset: '15px',
+                                    icon: 1,
+                                    time: 1000
+                                });
+                            } else if (res.code === '701') {
+                                layer.msg(res.msg, {
+                                    offset: '15px',
+                                    icon: 1,
+                                    time: 1000
+                                });
+
+                                let register = res.data;
+                                $("#name").val(register.name);
+                                $("#idCard").val(register.idCard);
+                                $("#phone").val(register.phone);
+                                $("#address").val(register.address);
+                                $("#community").val(register.community);
+                                $("#examinationTime").val(register.examinationTime);
+                                $("#remark").val(register.remark);
+                                form.render('select');
+                            }
+                        }
+                    });
+                }
+            });
+        });
     });
 </script>
 </body>

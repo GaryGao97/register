@@ -9,6 +9,7 @@ import com.example.register.domain.vo.ResultVO;
 import com.example.register.enums.ErrorEnum;
 import com.example.register.service.RegisterService;
 import com.example.register.util.BeanCopyUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,36 @@ public class RegisterController {
     @GetMapping("list")
     public ResultVO listRegister(PageOpt opt) {
         return ResultVO.success(registerService.listRegister(opt), registerService.registerCount(opt));
+    }
+
+    /**
+     * 查询
+     *
+     * @param idCard
+     * @return
+     */
+    @GetMapping
+    public ResultVO addPlus(String idCard) {
+        if (StringUtils.isBlank(idCard)) {
+            return null;
+        }
+
+        BasRegisterDO basRegisterDO = registerService.getRegister(idCard);
+        if (basRegisterDO == null) {
+            return null;
+        }
+
+        Date examinationTime = basRegisterDO.getExaminationTime();
+        if (examinationTime.getYear() == new Date().getYear()) {
+            return ResultVO.success(ErrorEnum.DATA_ALREADY_EXISTS.getErrorCode(),
+                    ErrorEnum.DATA_ALREADY_EXISTS.getErrorMsg(), null);
+        }
+
+        RegisterVO registerVO = BeanCopyUtil.copyProperties(basRegisterDO, RegisterVO.class);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        registerVO.setExaminationTime(format.format(basRegisterDO.getExaminationTime()));
+        return ResultVO.success(ErrorEnum.REGISTERED.getErrorCode(),
+                ErrorEnum.REGISTERED.getErrorMsg(), registerVO);
     }
 
     /**
