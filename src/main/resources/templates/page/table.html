@@ -175,13 +175,13 @@
                     {type: "checkbox", width: 50},
                     {field: 'registerId', width: 40, title: 'ID', sort: true, hide: true},
                     {field: 'name', width: 80, title: '姓名', sort: true},
-                    {field: 'idCard', width: 120, title: '身份证'},
+                    {field: 'idCard', width: 120, title: '身份证', templet: function(d){ return (d.idCard+"\t");}},
                     {field: 'sex', width: 60, title: '性别'},
-                    {field: 'birthTime', width: 120, title: '出生日期', sort: true},
+                    {field: 'birthTime', width: 120, title: '出生日期', sort: true, templet: function(d){ return (d.birthTime+"\t");}},
                     {field: 'address', width: 100, title: '现住址'},
-                    {field: 'phone', width: 80, title: '电话'},
+                    {field: 'phone', width: 80, title: '电话', templet: function(d){ return (d.phone+"\t");}},
                     {field: 'community', width: 100, title: '所属社区'},
-                    {field: 'examinationTime', width: 120, title: '体检日期', sort: true},
+                    {field: 'examinationTime', width: 120, title: '体检日期', sort: true, templet: function(d){ return (d.examinationTime+"\t");}},
                     {field: 'remark', width: 100, title: '备注'},
                     {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
                 ]
@@ -259,6 +259,11 @@
                 });
             } else if (obj.event === 'export') {
                 window.location = `${api}/register/export-all`;
+                layer.msg('正在导出，请稍后', {
+                            offset: '15px',
+                            icon: 1,
+                            time: 3000
+                        });
             }
         });
 
