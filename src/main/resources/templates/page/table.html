@@ -193,8 +193,9 @@
         });
 
         // 监听搜索操作
+        let where;
         form.on('submit(data-search-btn)', function (data) {
-            var result = JSON.stringify(data.field);
+            where = data.field;
 
             //执行搜索重载
             table.reload('currentTableId', {
@@ -202,7 +203,7 @@
                     curr: 1
                 }
                 , where: {
-                    searchParams: result
+                    searchParams: JSON.stringify(where)
                 }
             }, 'data');
 
@@ -258,12 +259,17 @@
                     }
                 });
             } else if (obj.event === 'export') {
-                window.location = `${api}/register/export-all`;
+                let param = "";
+                if (where !== undefined) {
+                    param = $.param(where);
+                }
+
+                window.location = `${api}/register/export-all?` + param;
                 layer.msg('正在导出，请稍后', {
-                            offset: '15px',
-                            icon: 1,
-                            time: 3000
-                        });
+                    offset: '15px',
+                    icon: 1,
+                    time: 3000
+                });
             }
         });
 

@@ -4,6 +4,7 @@ package com.example.register.service;
 import com.example.register.domain.dao.BasRegisterDO;
 import com.example.register.domain.opt.PageOpt;
 import com.example.register.domain.opt.RegisterOpt;
+import com.example.register.domain.opt.RegisterSearchParams;
 import com.example.register.domain.vo.RegisterVO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -74,7 +75,7 @@ public interface RegisterService {
      * @param response
      * @return
      */
-    void exportRegisterAll(RegisterOpt opt, HttpServletResponse response);
+    void exportRegisterAll(RegisterSearchParams opt, HttpServletResponse response);
 
     /**
      * 获取登记

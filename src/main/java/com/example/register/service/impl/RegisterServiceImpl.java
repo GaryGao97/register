@@ -92,6 +92,10 @@ public class RegisterServiceImpl implements RegisterService {
                     return Collections.emptyList();
                 }
             }
+
+            if (CollectionUtils.isNotEmpty(searchParams.getIds())) {
+                criteria.andRegisterIdIn(searchParams.getIds());
+            }
         }
 
         Integer limit = opt.getLimit();
@@ -102,7 +106,7 @@ public class RegisterServiceImpl implements RegisterService {
 
         example.setOrderByClause("examination_time desc");
         List<BasRegisterDO> basRegisterDos = basRegisterMapper.selectByExample(example);
-        return basRegisterDos.stream().map(basRegisterDO -> {
+        return basRegisterDos.parallelStream().map(basRegisterDO -> {
             String idCard = basRegisterDO.getIdCard();
             RegisterVO registerVO = BeanCopyUtil.copyProperties(basRegisterDO, RegisterVO.class);
             registerVO.setBirthTime(IdCardUtil.getBirthDateStr(idCard));
@@ -207,7 +211,7 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
-    public void exportRegisterAll(RegisterOpt opt, HttpServletResponse res) {
+    public void exportRegisterAll(RegisterSearchParams opt, HttpServletResponse res) {
         PageOpt pageOpt = new PageOpt();
         pageOpt.setSearchParams(JsonUtil.toJsonString(opt));
         List<RegisterVO> registerVos = listRegister(pageOpt);
@@ -250,7 +254,7 @@ public class RegisterServiceImpl implements RegisterService {
                 return true;
             }
 
-            basRegisterDos.forEach(basRegisterDO -> {
+            basRegisterDos.parallelStream().forEach(basRegisterDO -> {
                 basRegisterDO.setRegisterId(UniqueUtils.getBusinessKey());
                 BaseDO.initBaseDO(basRegisterDO);
             });

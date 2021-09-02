@@ -3,7 +3,8 @@ package com.example.register.domain.opt;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.NonNull;
+
+import java.util.List;
 
 /**
  * @author: Gary Gao(修远)
@@ -19,4 +20,5 @@ public class RegisterSearchParams {
     private String community;
     private String startExaminationTime;
     private String endExaminationTime;
+    private List<String> ids;
 }

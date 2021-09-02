@@ -4,6 +4,7 @@ import com.example.register.domain.dao.BasRegisterDO;
 import com.example.register.domain.opt.PageOpt;
 import com.example.register.domain.opt.RegisterImportOpt;
 import com.example.register.domain.opt.RegisterOpt;
+import com.example.register.domain.opt.RegisterSearchParams;
 import com.example.register.domain.vo.RegisterVO;
 import com.example.register.domain.vo.ResultVO;
 import com.example.register.enums.ErrorEnum;
@@ -128,7 +129,7 @@ public class RegisterController {
      * @return
      */
     @GetMapping("export-all")
-    public void exportRegisterAll(RegisterOpt opt, HttpServletResponse response) {
+    public void exportRegisterAll(RegisterSearchParams opt, HttpServletResponse response) {
         registerService.exportRegisterAll(opt, response);
     }
 
